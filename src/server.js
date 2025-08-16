@@ -126,6 +126,10 @@ app.use('/api/payments', authMiddleware, paymentRoutes);
 // Webhook routes (no auth required, but signature verification)
 app.use('/api/webhooks', webhookRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Payment Service is running");
+});
+
 // Root route
 app.get('/', (req, res) => {
     res.json({
