@@ -60,7 +60,15 @@ app.use(helmet({
 }));
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',');
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    process.env.AUTH_SERVICE_URL,
+    process.env.DATABASE_SERVICE_URL,
+    process.env.PAYMENT_SERVICE_URL,
+    process.env.AI_SERVICE_URL,
+    process.env.NOTIFICATION_SERVICE_URL,
+    process.env.METRICS_SERVICE_URL,
+];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
