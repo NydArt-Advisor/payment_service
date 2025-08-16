@@ -25,6 +25,9 @@ const healthRoutes = require('./routes/health');
 const app = express();
 const PORT = process.env.PORT || 3004;
 
+// Trust proxy configuration for rate limiting behind load balancers/proxies
+app.set('trust proxy', 1);
+
 // Configure Winston logger
 const logger = winston.createLogger({
     level: process.env.LOG_LEVEL || 'info',
@@ -62,22 +65,48 @@ app.use(helmet({
 // CORS configuration
 const allowedOrigins = [
     process.env.FRONTEND_URL,
+    process.env.CLIENT_URL,
     process.env.AUTH_SERVICE_URL,
     process.env.DATABASE_SERVICE_URL,
     process.env.PAYMENT_SERVICE_URL,
     process.env.AI_SERVICE_URL,
     process.env.NOTIFICATION_SERVICE_URL,
     process.env.METRICS_SERVICE_URL,
+    // Add both Vercel domains
+    'https://nydartadvisor-p3gw0m3og-darylnyds-projects.vercel.app',
+    'https://nydartadvisor.vercel.app',
+    'https://nydartadvisor-git-main-darylnyds-projects.vercel.app',
 ];
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        // Check if origin matches any allowed origins
+        const isAllowed = allowedOrigins.some(allowedOrigin => {
+            if (typeof allowedOrigin === 'string') {
+                return origin === allowedOrigin;
+            } else if (allowedOrigin instanceof RegExp) {
+                return allowedOrigin.test(origin);
+            }
+            return false;
+        });
+        
+        if (isAllowed) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.log('CORS blocked origin:', origin);
+            // For development, allow all origins
+            if (process.env.NODE_ENV === 'development') {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
         }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
 }));
 
 // Rate limiting
