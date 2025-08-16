@@ -18,7 +18,7 @@ const logger = winston.createLogger({
 router.get('/plans', async (req, res) => {
     try {
         // Fetch plans from the bdd service
-        const bddUrl = process.env.BDD_SERVICE_URL || 'http://localhost:5001/api/plans';
+        const bddUrl = process.env.DATABASE_SERVICE_URL + '/api/plans';
         const response = await axios.get(bddUrl);
         const plans = response.data.data;
         res.json({ success: true, data: plans });

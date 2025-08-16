@@ -24,7 +24,8 @@ router.post('/test', async (req, res) => {
         // Update user's current plan in the authentication service
         try {
             const fetch = (await import('node-fetch')).default;
-            const response = await fetch(`http://localhost:5002/auth/users/${userId}/plan`, {
+            const authServiceUrl = process.env.AUTH_SERVICE_URL;
+            const response = await fetch(`${authServiceUrl}/auth/users/${userId}/plan`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ planId })
@@ -238,7 +239,8 @@ async function handleCheckoutSessionCompleted(session) {
             // Update user's current plan in the authentication service
             try {
                 const fetch = (await import('node-fetch')).default;
-                const response = await fetch(`http://localhost:5002/auth/users/${userId}/plan`, {
+                const authServiceUrl = process.env.AUTH_SERVICE_URL;
+                const response = await fetch(`${authServiceUrl}/auth/users/${userId}/plan`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ planId })
@@ -276,7 +278,8 @@ async function handleSubscriptionCreated(subscription) {
             // Update user's current plan in the authentication service
             try {
                 const fetch = (await import('node-fetch')).default;
-                const response = await fetch(`http://localhost:5002/auth/users/${userId}/plan`, {
+                const authServiceUrl = process.env.AUTH_SERVICE_URL;
+                const response = await fetch(`${authServiceUrl}/auth/users/${userId}/plan`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ planId })
@@ -315,7 +318,8 @@ async function handleSubscriptionUpdated(subscription) {
             // Update user's current plan in the authentication service
             try {
                 const fetch = (await import('node-fetch')).default;
-                const response = await fetch(`http://localhost:5002/auth/users/${userId}/plan`, {
+                const authServiceUrl = process.env.AUTH_SERVICE_URL;
+                const response = await fetch(`${authServiceUrl}/auth/users/${userId}/plan`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ planId })
