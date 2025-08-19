@@ -197,12 +197,14 @@ app.use(expressWinston.errorLogger({
 }));
 app.use(errorHandler);
 
-// Start server
-app.listen(PORT, () => {
-    logger.info(`Payment service running on port ${PORT}`);
-    logger.info(`Environment: ${process.env.NODE_ENV}`);
-    logger.info(`Health check available at: http://localhost:${PORT}/health`);
-});
+// Start server function
+const startServer = () => {
+    app.listen(PORT, () => {
+        logger.info(`Payment service running on port ${PORT}`);
+        logger.info(`Environment: ${process.env.NODE_ENV}`);
+        logger.info(`Health check available at: http://localhost:${PORT}/health`);
+    });
+};
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
@@ -215,4 +217,10 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-module.exports = app; 
+// Export app for testing
+module.exports = app;
+
+// Only start the server if this file is run directly
+if (require.main === module) {
+    startServer();
+} 
