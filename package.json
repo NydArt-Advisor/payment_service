@@ -16,7 +16,16 @@
         "test:file": "node src/test/run-tests.js --file",
         "test:jest": "jest",
         "lint": "eslint src/",
-        "format": "prettier --write src/"
+        "lint:fix": "eslint src/ --fix",
+        "format": "prettier --write src/",
+        "security:audit": "npm audit",
+        "security:fix": "npm audit fix",
+        "docker:build": "docker build -t nydart-advisor/payment-service .",
+        "docker:run": "docker run -p 5004:5004 nydart-advisor/payment-service",
+        "docker:push": "docker push nydart-advisor/payment-service",
+        "ci:test": "npm run lint && npm run security:audit && npm run test:full",
+        "ci:build": "npm run ci:test && npm run docker:build",
+        "ci:deploy": "npm run ci:build && npm run docker:push"
     },
     "keywords": [
         "payment",
